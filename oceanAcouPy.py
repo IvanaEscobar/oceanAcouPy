@@ -244,3 +244,16 @@ def TLMOIPekeris (r,z,mat1,mat2,N):
 # Returns:
 #   Transmission loss [dB]
     return -20*log10( abs(pressureMOIPekeris(r, z, mat1, mat2, N)) )
+
+def travelTimes (IDlist):
+# Inputs:
+#   IDlist : list of indicies
+# Returns:
+#   travel times array [s]
+    tau =[]
+    for ii in IDlist:
+        ds = array(rayDf[ii].loc[:,'s'][1:])-\
+             array(rayDf[ii].loc[:,'s'][:-1])
+        csi = cDD(rayDf[ii].loc[:,'ray'])
+        tau.append(sum(ds/csi[:-1]))
+    return array(tau)
