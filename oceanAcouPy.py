@@ -27,6 +27,13 @@ def soundSpeed (t,s,z, lat=0, eqn='mackenzie81'):
                 1.23e-2*t*s + 8.7e-5*t**2*s + 1.56e-2*z + \
                 2.55e-7*z**2 - 7.3e-12*z**3 + 1.2e-6*z*(lat-45) - \
                 9.5e-13*t*z**3 + 3e-7*t**2*z + 1.43e-5*s*z
+# double-ducted sound speed profile: 
+#     z : depth [m]
+cDD = lambda z : 10*sin(f1(z)*(5000.-z)) +\
+                        70*sin(f2(z)*(5000.-z)) +\
+                        0.014*z + 1480.
+f1 = lambda z : -3e-18*(5000-z)**4
+f2 = lambda z :  3e-19*(5000-z)**4
 
 def K (pH):
 # Inputs:
