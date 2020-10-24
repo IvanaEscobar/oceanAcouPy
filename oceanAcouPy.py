@@ -4,6 +4,8 @@
 # Author: Ivana Escobar
 # Last Edited: 24 Oct 2020
 
+### FUNCTIONS ###
+
 def Theta2 (c1, c2, theta1):
 # Inputs:
 #   c1 : sound speed of top fluid [m/s]
@@ -109,3 +111,56 @@ def BL (refc):
 # Returns:
 #   BL : bottom loss [dB]
     return -20*log10( abs(refc) )
+
+def intromissionCheck (mat1):
+# Inputs:
+#   mat1 : material name [string] from a Pandas DataFrame
+#          cc : complex sound speed [m/s]
+#          rho: density [kg/m3] or [g/cm3]
+# Returns:
+#   statement for angle of intromission
+    c1 = df.loc[mat1,'cc']
+    rho1 = df.loc[mat1,'rho']
+
+    for rho2,c2,name in \
+    zip(df.loc[:,'rho'], df.loc[:,'cc'], df.index):
+        if (c1 > c2 and rho1*c1 < rho2*c2):
+            print('%s has an angle of intromission' %name)
+            print('\ttheta_I is %0.3f' %thetaI(c1,rho1,c2,rho2).real)
+    return None
+
+def thetaI (c1,r1, c2,r2):
+# Inputs:
+#   c1 : sound speed of top material [m/s]
+#   r1 : density of top material [g/cm3]
+#   c2 : sound speed of bottom material [m/s]
+#   r2 : density of bottom material [g/cm3]
+# Returns:
+#   intromission angle : [deg]
+    return arctan( sqrt( (1-(c2/c1)**2)/\
+                        ((r2*c2/r1/c1)**2-1) ) ) * 180/pi
+
+def criticalangleCheck (mat1):
+# Inputs:
+#   mat1 : material name [string] from a Pandas DataFrame
+#          cc : complex sound speed [m/s]
+#          rho: density [kg/m3] or [g/cm3]
+# Returns:
+#   statement with critical angle
+    c1 = df.loc[mat1,'cc']
+    rho1 = df.loc[mat1,'rho']
+
+    for rho2,c2,name in \
+    zip(df.loc[:,'rho'], df.loc[:,'cc'], df.index):
+        if (c1 < c2):
+            print('%s has a critical angle' %name)
+            print('\ttheta_c is %0.3f'%thetac(c1,c2))
+    return None
+
+def thetac (c1,c2):
+# Inputs:
+#   c1 : sound speed of top material [m/s]
+#   c2 : sound speed of bottom material [m/s]
+# Returns:
+#   critical angle : [deg]
+    return arccos( c1/c2 ) * 180/pi
