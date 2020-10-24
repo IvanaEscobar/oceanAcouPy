@@ -1,8 +1,12 @@
 # EE348N: Ocean Acoustics 
 # functions designated for insruction of semester topics course 
 # in ocean acoustics. 
-# Author: Ivana Escobar
+# Primary author: Ivana Escobar
 # Last Edited: 24 Oct 2020
+
+### PACKAGES ###
+from numpy import angle, log10, linspace, array, ndarray, \
+                sin, cos, arccos, arctan, sqrt, exp, pi, nan
 
 ### FUNCTIONS ###
 def soundSpeed (t,s,z, lat=0, eqn='mackenzie81'):
