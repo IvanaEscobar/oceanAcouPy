@@ -121,7 +121,7 @@ def Ztot (rho,cs,thetas,cp,thetap):
     Zs = Zimp(rho,cs,thetas)
     return Zp*cos(thetas*pi/90)**2 + Zs*sin(thetas*pi/90)**2
 
-def RefC (mat1, mat2, thetaList):
+def RefC (df, mat1, mat2, thetaList):
 # Inputs:
 #   mat1 : material name [string] from a Pandas DataFrame
 #          c : sound speed [m/s]
@@ -185,7 +185,7 @@ def BL (refc):
 #   BL : bottom loss [dB]
     return -20*log10( abs(refc) )
 
-def intromissionCheck (mat1):
+def intromissionCheck (df, mat1):
 # Inputs:
 #   mat1 : material name [string] from a Pandas DataFrame
 #          cc : complex sound speed [m/s]
@@ -213,7 +213,7 @@ def thetaI (c1,r1, c2,r2):
     return arctan( sqrt( (1-(c2/c1)**2)/\
                         ((r2*c2/r1/c1)**2-1) ) ) * 180/pi
 
-def criticalangleCheck (mat1):
+def criticalangleCheck (df, mat1):
 # Inputs:
 #   mat1 : material name [string] from a Pandas DataFrame
 #          cc : complex sound speed [m/s]
@@ -230,7 +230,7 @@ def criticalangleCheck (mat1):
             print('\ttheta_c is %0.3f'%thetac(c1,c2))
     return None
 
-def shearcriticalangleCheck (mat1):
+def shearcriticalangleCheck (df, mat1):
 # Inputs:
 #   mat1 : material name [string] from a Pandas DataFrame
 #          cc : complex sound speed [m/s]
@@ -259,7 +259,7 @@ def thetac (c1,c2):
 #    c: sound speed, f: frequency
 kP = lambda c,f : 2*pi*f / c
 
-def Rnm (n,m,r,z):
+def Rnm (n,m,r,z,zs,D):
 # Inputs:
 #   n : number of image group in sum (int)
 #   m : number of image in image group (int)
@@ -267,9 +267,9 @@ def Rnm (n,m,r,z):
 #   z : receiver depth [m]
 # Returns:
 #   distance between image and receiver
-    return sqrt(r**2 + Znm(n,m,z)**2)
+    return sqrt(r**2 + Znm(n,m,z,zs,D)**2)
 
-def Znm (n,m,z):
+def Znm (n,m,z,zs,D):
 # Inputs:
 #   n : number of image group in sum (int)
 #   m : number of image in image group (int)
@@ -285,40 +285,42 @@ def Znm (n,m,z):
     if (m==4):
         return z-zs+2*D*(n+1)
 
-def pressureMOIPekeris (r,z,mat1,mat2,N):
+def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Inputs:
 #   r : receiver range [m]
 #   z : receiver depth [m]
 #   mat1 : material name [string] from a Pandas DataFrame
 #   mat2 : material name [string] from a Pandas DataFrame
+#   f : frequency [Hz]
 #   N : arange of number of image groups (ints)
 # Returns:
 #   pressure derived by MOI for a Pekeris waveguide (complex)
     R1 = -1
-    R2 = RefC( mat1, mat2, \
+    R2 = RefC( df, mat1, mat2, \
                  linspace(0.+1e-10,90.,N[-1]+1,dtype=complex) )
-    k1 = kP(df.loc[mat1,'c'], freq)
+    k1 = kP(df.loc[mat1,'c'], f)
 
     p=[ (R1*R2[n])**n*\
-       (       exp(1j*k1*Rnm(n,1,r,z))/Rnm(n,1,r,z) +\
-         R2[n]*exp(1j*k1*Rnm(n,2,r,z))/Rnm(n,2,r,z) +\
-         R1   *exp(1j*k1*Rnm(n,3,r,z))/Rnm(n,3,r,z) +\
-         R1*R2[n]*exp(1j*k1*Rnm(n,4,r,z))/Rnm(n,4,r,z) )\
+       (       exp(1j*k1*Rnm(n,1,r,z,zs,D))/Rnm(n,1,r,z,zs,D) +\
+         R2[n]*exp(1j*k1*Rnm(n,2,r,z,zs,D))/Rnm(n,2,r,z,zs,D) +\
+         R1   *exp(1j*k1*Rnm(n,3,r,z,zs,D))/Rnm(n,3,r,z,zs,D) +\
+         R1*R2[n]*exp(1j*k1*Rnm(n,4,r,z,zs,D))/Rnm(n,4,r,z,zs,D) )\
       for n in N]
     return sum(p)
 
-def TLMOIPekeris (r,z,mat1,mat2,N):
+def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Inputs:
 #   r : receiver range [m]
 #   z : receiver depth [m]
 #   mat1 : material name [string] from a Pandas DataFrame
 #   mat2 : material name [string] from a Pandas DataFrame
+#   f : frequency [Hz]
 #   N : arange of number of image groups (ints)
 # Returns:
 #   Transmission loss [dB]
-    return -20*log10( abs(pressureMOIPekeris(r, z, mat1, mat2, N)) )
+    return -20*log10( abs(pressureMOIPekeris(r,z,df,mat1,mat2,f,zs,D,N)) )
 
-def travelTimes (IDlist):
+def travelTimes (rayDf, IDlist):
 # Inputs:
 #   IDlist : list of indicies
 # Returns:
