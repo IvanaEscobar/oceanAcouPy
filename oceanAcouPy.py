@@ -157,6 +157,23 @@ def criticalangleCheck (mat1):
             print('\ttheta_c is %0.3f'%thetac(c1,c2))
     return None
 
+def shearcriticalangleCheck (mat1):
+# Inputs:
+#   mat1 : material name [string] from a Pandas DataFrame
+#          cc : complex sound speed [m/s]
+#          rho: density [kg/m3] or [g/cm3]
+# Returns:
+#   statement with shear critical angle
+    c1 = df.loc[mat1,'cc']
+    rho1 = df.loc[mat1,'rho']
+
+    for rho2,cs2,name in \
+    zip(df.loc[:,'rho'], df.loc[:,'csc'], df.index):
+        if (c1 < cs2):
+            print('%s has a shear critical angle' %name)
+            print('\ttheta_c_s is %0.3f' %thetac(c1,cs2,'shear').real)
+    return None
+
 def thetac (c1,c2):
 # Inputs:
 #   c1 : sound speed of top material [m/s]
