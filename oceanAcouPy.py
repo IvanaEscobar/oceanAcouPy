@@ -130,6 +130,7 @@ def Ztot (rho,cs,thetas,cp,thetap):
 
 def RefC (df, mat1, mat2, thetaList):
 # Inputs:
+#   df : pandas DataFrame
 #   mat1 : material name [string] from a Pandas DataFrame
 #          c : sound speed [m/s]
 #          rho: density [kg/m3]
@@ -222,6 +223,7 @@ def thetaI (c1,r1, c2,r2):
 
 def criticalangleCheck (df, mat1):
 # Inputs:
+#   df : pandas DataFrame
 #   mat1 : material name [string] from a Pandas DataFrame
 #          cc : complex sound speed [m/s]
 #          rho: density [kg/m3] or [g/cm3]
@@ -239,6 +241,7 @@ def criticalangleCheck (df, mat1):
 
 def shearcriticalangleCheck (df, mat1):
 # Inputs:
+#   df : pandas DataFrame
 #   mat1 : material name [string] from a Pandas DataFrame
 #          cc : complex sound speed [m/s]
 #          rho: density [kg/m3] or [g/cm3]
@@ -272,6 +275,8 @@ def Rnm (n,m,r,z,zs,D):
 #   m : number of image in image group (int)
 #   r : receiver range [m]
 #   z : receiver depth [m]
+#   zs : source depth [m]
+#   D : waveguide depth [m]
 # Returns:
 #   distance between image and receiver
     return sqrt(r**2 + Znm(n,m,z,zs,D)**2)
@@ -281,6 +286,8 @@ def Znm (n,m,z,zs,D):
 #   n : number of image group in sum (int)
 #   m : number of image in image group (int)
 #   z : receiver depth [m]
+#   zs : source depth [m]
+#   D : waveguide depth [m]
 # Returns:
 #   vertical distance between image source and receiver depth
     if (m==1):
@@ -296,9 +303,12 @@ def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Inputs:
 #   r : receiver range [m]
 #   z : receiver depth [m]
+#   df : pandas DataFrame
 #   mat1 : material name [string] from a Pandas DataFrame
 #   mat2 : material name [string] from a Pandas DataFrame
 #   f : frequency [Hz]
+#   zs : source depth [m]
+#   D : waveguide depth [m]
 #   N : arange of number of image groups (ints)
 # Returns:
 #   pressure derived by MOI for a Pekeris waveguide (complex)
@@ -319,9 +329,12 @@ def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Inputs:
 #   r : receiver range [m]
 #   z : receiver depth [m]
+#   df : pandas DataFrame
 #   mat1 : material name [string] from a Pandas DataFrame
 #   mat2 : material name [string] from a Pandas DataFrame
 #   f : frequency [Hz]
+#   zs : source depth [m]
+#   D : waveguide depth [m]
 #   N : arange of number of image groups (ints)
 # Returns:
 #   Transmission loss [dB]
@@ -329,6 +342,7 @@ def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 
 def travelTimes (rayDf, IDlist):
 # Inputs:
+#   rayDf : pandas DataFrame
 #   IDlist : list of indicies
 # Returns:
 #   travel times array [s]
