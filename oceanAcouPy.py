@@ -164,3 +164,66 @@ def thetac (c1,c2):
 # Returns:
 #   critical angle : [deg]
     return arccos( c1/c2 ) * 180/pi
+
+# wavenumber k:
+#    c: sound speed, f: frequency
+kP = lambda c,f : 2*pi*f / c
+
+def Rnm (n,m,r,z):
+# Inputs:
+#   n : number of image group in sum (int)
+#   m : number of image in image group (int)
+#   r : receiver range [m]
+#   z : receiver depth [m]
+# Returns:
+#   distance between image and receiver
+    return sqrt(r**2 + Znm(n,m,z)**2)
+
+def Znm (n,m,z):
+# Inputs:
+#   n : number of image group in sum (int)
+#   m : number of image in image group (int)
+#   z : receiver depth [m]
+# Returns:
+#   vertical distance between image source and receiver depth
+    if (m==1):
+        return z-zs-2*D*n
+    if (m==2):
+        return z+zs-2*D*(n+1)
+    if (m==3):
+        return z+zs+2*D*n
+    if (m==4):
+        return z-zs+2*D*(n+1)
+
+def pressureMOIPekeris (r,z,mat1,mat2,N):
+# Inputs:
+#   r : receiver range [m]
+#   z : receiver depth [m]
+#   mat1 : material name [string] from a Pandas DataFrame
+#   mat2 : material name [string] from a Pandas DataFrame
+#   N : arange of number of image groups (ints)
+# Returns:
+#   pressure derived by MOI for a Pekeris waveguide (complex)
+    R1 = -1
+    R2 = RefC( mat1, mat2, \
+                 linspace(0.+1e-10,90.,N[-1]+1,dtype=complex) )
+    k1 = kP(df.loc[mat1,'c'], freq)
+
+    p=[ (R1*R2[n])**n*\
+       (       exp(1j*k1*Rnm(n,1,r,z))/Rnm(n,1,r,z) +\
+         R2[n]*exp(1j*k1*Rnm(n,2,r,z))/Rnm(n,2,r,z) +\
+         R1   *exp(1j*k1*Rnm(n,3,r,z))/Rnm(n,3,r,z) +\
+         R1*R2[n]*exp(1j*k1*Rnm(n,4,r,z))/Rnm(n,4,r,z) )\
+      for n in N]
+    return sum(p)
+
+def TLMOIPekeris (r,z,mat1,mat2,N):
+# Inputs:
+#   r : receiver range [m]
+#   z : receiver depth [m]
+#   mat1 : material name [string] from a Pandas DataFrame
+#   mat2 : material name [string] from a Pandas DataFrame
+#   N : arange of number of image groups (ints)
+# Returns:
+#   Transmission loss [dB]
+    return -20*log10( abs(pressureMOIPekeris(r, z, mat1, mat2, N)) )
