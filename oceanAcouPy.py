@@ -377,8 +377,6 @@ def beamPattern ( theta, thetaS, f, c, r, noise ):
                                  (exp(1j*lookPhase) + noise) ) )
     return 20*log10( abs(array(beamResponse))/len(r)  )
 
-from scipy.integrate import quad
-
 def beamPatternIntegrand ( theta, thetaS, f, c, r, noise ):
     steerPhase = bPhase(thetaS, f, c, r)
     lookPhase = bPhase(theta, f, c, r)
@@ -387,5 +385,3 @@ def beamPatternIntegrand ( theta, thetaS, f, c, r, noise ):
 
 def arrayGain (BFIntegral):
     return 10*log10(2*pi / BFIntegral)
-
-
