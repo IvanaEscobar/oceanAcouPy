@@ -35,8 +35,8 @@ def cMunk (z):
 #   Munk sound speed profile [m/s]
     c0 = 1500.
     eps = 0.00737
-    2*(z-1300)/1300
-    return c0*( 1 + eps*(zt(z) - 1 + exp(-zt(z))) )
+    zt=2*(z-1300)/1300
+    return c0*( 1 + eps*(zt - 1 + exp(-zt)) )
 
 # double-ducted sound speed profile: 
 #     z : depth [m]
