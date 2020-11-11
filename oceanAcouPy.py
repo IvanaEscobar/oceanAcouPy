@@ -5,7 +5,7 @@
 # Last Edited: 24 Oct 2020
 
 ### PACKAGES ###
-from numpy import angle, log10, linspace, array, ndarray, \
+from numpy import angle, log10, linspace, array, ndarray, arange,\
                 sin, cos, arccos, arctan, sqrt, exp, pi, nan
 
 ### FUNCTIONS ###
@@ -168,18 +168,16 @@ def RefC (df, mat1, mat2, thetaList):
     cs = cComplex(df.loc[mat2,'cs'], df.loc[mat2,'alphas'])
     df.loc[mat2,'csc']=cs
 
-    theta2 = []
-    thetas = []
     z1 = []; z2 = []
     for theta in thetaList:
-        theta2.append( Theta2(c1,c2,theta) )
+        theta2 = Theta2(c1,c2,theta) 
         z1.append( Zimp(rho1,c1,theta) )
         if (cs == 0.):
-            z2.append( Zimp(rho2,c2,theta2[-1]) )
+            z2.append( Zimp(rho2,c2,theta2) )
         else:
             thetas.append( Theta2(c1,cs,theta) )
-            z2.append( Ztot(rho2,cs,thetas[-1],\
-                            c2,theta2[-1]) )
+            z2.append( Ztot(rho2,cs,thetas,\
+                            c2,theta2) )
     z1 = array(z1)
     z2 = array(z2)
     return (z2 - z1) / (z1 + z2)
@@ -281,7 +279,7 @@ def thetac (c1,c2):
 kP = lambda c,f : 2*pi*f / c
 
 def Rnm (n,m,r,z,zs,D):
-# Inputs:
+# Inputse
 #   n : number of image group in sum (int)
 #   m : number of image in image group (int)
 #   r : receiver range [m]
@@ -329,12 +327,12 @@ def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
     p = []
     for n in N:
         R2 = RefC ( df, mat1, mat2,\
-                [arctan(abs(Znm(n,a,z,zs,D))/r )for a in arange(4)+1] )
+                [arctan(abs(Znm(n,a,z,zs,D))/r ) for a in arange(4)+1] )
 
         V1 = (R1*R2[0])**n
-        V2 = R1*(R1*R2[1])**n
-        V3 = R2[2]*(R1*R2[2])**n
-        V4 = R1*(R1*R2[3])**n
+        V2 = R2[1]*(R1*R2[1])**n
+        V3 = R1*(R1*R2[2])**n
+        V4 = (R1*R2[3])**(n+1)
 
         p.append( V1*exp(1j*k1*Rnm(n,1,r,z,zs,D))/Rnm(n,1,r,z,zs,D) +\
                   V2*exp(1j*k1*Rnm(n,2,r,z,zs,D))/Rnm(n,2,r,z,zs,D) +\
