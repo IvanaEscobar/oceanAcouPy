@@ -182,6 +182,13 @@ def RefC (df, mat1, mat2, thetaList):
     z2 = array(z2)
     return (z2 - z1) / (z1 + z2)
 
+def RefC_FB(theta1,c1,rho1,c2,rho2):
+    theta2 = arccos(c2/c1*cos(theta1))
+    R = (rho2*c2/sin(theta2) - rho1*c1/sin(theta1))/(rho2*c2/sin(theta2) + rho1*c1/sin(theta1))
+    if (theta1 == 0):
+        R=1
+    return R
+
 def phaseDeg (arr):
 # Inputs:
 #   arr: array of complex data type
