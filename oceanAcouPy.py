@@ -175,7 +175,7 @@ def RefC (df, mat1, mat2, thetaList):
         if (cs == 0.):
             z2.append( Zimp(rho2,c2,theta2) )
         else:
-            thetas.append( Theta2(c1,cs,theta) )
+            thetas = Theta2(c1,cs,theta)
             z2.append( Ztot(rho2,cs,thetas,\
                             c2,theta2) )
     z1 = array(z1)
@@ -347,6 +347,50 @@ def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
                   V4*exp(1j*k1*Rnm(n,4,r,z,zs,D))/Rnm(n,4,r,z,zs,D) )
     return sum(p)
 
+def pressureMOIPekeris2 (r,z,df,mat1,mat2,f,zs,D,N):
+# Inputs:
+#   r : receiver range [m]
+#   z : receiver depth [m]
+#   df : pandas DataFrame
+#   mat1 : material name [string] from a Pandas DataFrame
+#   mat2 : material name [string] from a Pandas DataFrame
+#   f : frequency [Hz]
+#   zs : source depth [m]
+#   D : waveguide depth [m]
+#   N : arange of number of image groups (ints)
+# Returns:
+#   pressure derived by MOI for a Pekeris waveguide (complex)
+    R1 = -1
+    k1 = kP(df.loc[mat1,'c'], f)
+    c1 = df.loc[mat1,'c']
+    if (mat1 != 'water'):
+        c1 = cComplex(df.loc[mat1,'c'], df.loc[mat1,'alpha'])
+    c2 = cComplex(df.loc[mat2,'c'], df.loc[mat2,'alpha'])
+    rho1 = df.loc[mat1, 'rho'] 
+    rho2 = df.loc[mat2, 'rho'] 
+
+    cs = cComplex(df.loc[mat2,'cs'], df.loc[mat2,'alphas'])
+
+    p = []
+    for n in N:
+        theta2 = [arctan(abs(Znm(n,a,z,zs,D))/r ) for a in arange(4)+1]
+        rnm = [Rnm(n,a,r,z,zs,D) for a in arange(4)+1]
+        if (cs == 0.0):
+            R2 = RefC_FB(theta2, c1, rho1, c2, rho2)
+        else:
+            R2 = RefC_FB_shear(theta2, c1, rho1, c2, rho2, cs)
+
+        V1 = (R1*R2[0])**n
+        V2 = R2[1]*(R1*R2[1])**n
+        V3 = R1*(R1*R2[2])**n
+        V4 = (R1*R2[3])**(n+1)
+
+        p.append( V1*exp(1j*k1*rnm[0])/rnm[0] +\
+                  V2*exp(1j*k1*rnm[1])/rnm[1] +\
+                  V3*exp(1j*k1*rnm[2])/rnm[2] +\
+                  V4*exp(1j*k1*rnm[3])/rnm[3] )
+    return sum(p)
+
 def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Inputs:
 #   r : receiver range [m]
@@ -360,7 +404,7 @@ def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 #   N : arange of number of image groups (ints)
 # Returns:
 #   Transmission loss [dB]
-    return -20*log10( abs(pressureMOIPekeris(r,z,df,mat1,mat2,f,zs,D,N)) )
+    return -20*log10( abs(pressureMOIPekeris2(r,z,df,mat1,mat2,f,zs,D,N)) )
 
 def travelTimes (rayDf, IDlist):
 # Inputs:
