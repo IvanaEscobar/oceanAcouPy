@@ -324,16 +324,22 @@ def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 # Returns:
 #   pressure derived by MOI for a Pekeris waveguide (complex)
     R1 = -1
-    R2 = RefC( df, mat1, mat2, \
-                 linspace(0.+1e-10,90.,N[-1]+1,dtype=complex) )
     k1 = kP(df.loc[mat1,'c'], f)
+    
+    p = []
+    for n in N:
+        R2 = RefC ( df, mat1, mat2,\
+                [arctan(abs(Znm(n,a,z,zs,D))/r )for a in arange(4)+1] )
 
-    p=[ (R1*R2[n])**n*\
-       (       exp(1j*k1*Rnm(n,1,r,z,zs,D))/Rnm(n,1,r,z,zs,D) +\
-         R2[n]*exp(1j*k1*Rnm(n,2,r,z,zs,D))/Rnm(n,2,r,z,zs,D) +\
-         R1   *exp(1j*k1*Rnm(n,3,r,z,zs,D))/Rnm(n,3,r,z,zs,D) +\
-         R1*R2[n]*exp(1j*k1*Rnm(n,4,r,z,zs,D))/Rnm(n,4,r,z,zs,D) )\
-      for n in N]
+        V1 = (R1*R2[0])**n
+        V2 = R1*(R1*R2[1])**n
+        V3 = R2[2]*(R1*R2[2])**n
+        V4 = R1*(R1*R2[3])**n
+
+        p.append( V1*exp(1j*k1*Rnm(n,1,r,z,zs,D))/Rnm(n,1,r,z,zs,D) +\
+                  V2*exp(1j*k1*Rnm(n,2,r,z,zs,D))/Rnm(n,2,r,z,zs,D) +\
+                  V3*exp(1j*k1*Rnm(n,3,r,z,zs,D))/Rnm(n,3,r,z,zs,D) +\
+                  V4*exp(1j*k1*Rnm(n,4,r,z,zs,D))/Rnm(n,4,r,z,zs,D) )
     return sum(p)
 
 def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
