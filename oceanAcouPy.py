@@ -189,6 +189,19 @@ def RefC_FB(theta1,c1,rho1,c2,rho2):
         R=1
     return R
 
+def RefC_FB_shear(theta1,c1,rho1,c2,rho2,cs):
+    theta2 = arccos(c2/c1*cos(theta1))
+    thetas = arccos(cs/c1*cos(theta1))
+
+    Zp = rho2*c2/sin(theta2)
+    Zs = rho2*c2/sin(thetas)
+    Ztot = Zp*cos(2*thetas)**2 + Zs*sin(2*thetas)**2
+
+    R = (Ztot - rho1*c1/sin(theta1))/(Ztot + rho1*c1/sin(theta1))
+    if (theta1 == 0):
+        R=1
+    return R
+
 def phaseDeg (arr):
 # Inputs:
 #   arr: array of complex data type
