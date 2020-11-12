@@ -343,38 +343,6 @@ def pressureMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 #   pressure derived by MOI for a Pekeris waveguide (complex)
     R1 = -1
     k1 = kP(df.loc[mat1,'c'], f)
-    
-    p = []
-    for n in N:
-        R2 = RefC ( df, mat1, mat2,\
-                [arctan(abs(Znm(n,a,z,zs,D))/r ) for a in arange(4)+1] )
-
-        V1 = (R1*R2[0])**n
-        V2 = R2[1]*(R1*R2[1])**n
-        V3 = R1*(R1*R2[2])**n
-        V4 = (R1*R2[3])**(n+1)
-
-        p.append( V1*exp(1j*k1*Rnm(n,1,r,z,zs,D))/Rnm(n,1,r,z,zs,D) +\
-                  V2*exp(1j*k1*Rnm(n,2,r,z,zs,D))/Rnm(n,2,r,z,zs,D) +\
-                  V3*exp(1j*k1*Rnm(n,3,r,z,zs,D))/Rnm(n,3,r,z,zs,D) +\
-                  V4*exp(1j*k1*Rnm(n,4,r,z,zs,D))/Rnm(n,4,r,z,zs,D) )
-    return sum(p)
-
-def pressureMOIPekeris2 (r,z,df,mat1,mat2,f,zs,D,N):
-# Inputs:
-#   r : receiver range [m]
-#   z : receiver depth [m]
-#   df : pandas DataFrame
-#   mat1 : material name [string] from a Pandas DataFrame
-#   mat2 : material name [string] from a Pandas DataFrame
-#   f : frequency [Hz]
-#   zs : source depth [m]
-#   D : waveguide depth [m]
-#   N : arange of number of image groups (ints)
-# Returns:
-#   pressure derived by MOI for a Pekeris waveguide (complex)
-    R1 = -1
-    k1 = kP(df.loc[mat1,'c'], f)
     c1 = df.loc[mat1,'c']
     if (mat1 != 'water'):
         c1 = cComplex(df.loc[mat1,'c'], df.loc[mat1,'alpha'])
@@ -417,7 +385,7 @@ def TLMOIPekeris (r,z,df,mat1,mat2,f,zs,D,N):
 #   N : arange of number of image groups (ints)
 # Returns:
 #   Transmission loss [dB]
-    return -20*log10( abs(pressureMOIPekeris2(r,z,df,mat1,mat2,f,zs,D,N)) )
+    return -20*log10( abs(pressureMOIPekeris(r,z,df,mat1,mat2,f,zs,D,N)) )
 
 def travelTimes (rayDf, IDlist):
 # Inputs:
