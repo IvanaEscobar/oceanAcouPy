@@ -4,10 +4,6 @@
 # Primary author: Ivana Escobar
 # Last Edited: 24 Oct 2020
 
-### PACKAGES ###
-from numpy import angle, log10, linspace, array, ndarray, arange,\
-                sin, cos, arccos, arctan, sqrt, exp, pi, nan
-
 ### FUNCTIONS ###
 def soundSpeed (t,s,z, lat=0, eqn='mackenzie81'):
 # Inputs:
