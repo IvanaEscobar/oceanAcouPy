@@ -2,7 +2,7 @@
 # Method of Images for the pekeris waveguide
 
 from numpy import log10, array, arange, arctan, sqrt, exp, pi
-from .relfCoeff import cComplex, RefC_FB, RefC_FB_shear
+from .reflCoeff import cComplex, RefC_FB, RefC_FB_shear
 from .soundSpeed import cDD
 
 ### FUNCTIONS ###
