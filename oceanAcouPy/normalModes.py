@@ -1,7 +1,7 @@
 # EE348N: Ocean Acoustics 
 # Normal Mode solutions
 
-from numpy import log10, array, arange, arctan, sqrt, exp, pi
+from numpy import log10, tan, sqrt, pi
 from .reflCoeff import cComplex, RefC_FB, RefC_FB_shear
 from .soundSpeed import cDD
 
@@ -39,5 +39,5 @@ kzP = lambda kr,c,f : sqrt(kP(c,f)**2 - kr**2)
 
 #-------------------------------------------------------------------------------
 # Characteristic Equation for waveguide with lossless bottom
-CE = lambda kr,f : np.tan(kzP(kr,cw,f)*D) +\
+CE = lambda kr,f : tan(kzP(kr,cw,f)*D) +\
                 complex(0, rhob/rhow*kzP(kr,cw,f)/kzP(kr,cb,f) )
