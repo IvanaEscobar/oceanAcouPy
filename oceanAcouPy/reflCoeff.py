@@ -115,3 +115,56 @@ def RefC_FB_shear(theta1,c1,rho1,c2,rho2,cs):
     if (theta1 == 0):
         R=1
     return R
+
+#-------------------------------------------------------------------------------
+def phi(f,c,h,theta):
+# Inputs:
+#   f : frequency [Hz]
+#   c : sound speed [m/s]
+#   h : thickness of middle layer [m]
+#   theta : grazing angle [deg] (array)
+# Returns:
+#   phi2 : phase delay of middle layer [deg]
+    return 2*pi*f*h*sin(theta*pi/180) / c
+
+#-------------------------------------------------------------------------------
+def Rlayered (data, mat1,mat2,mat3, h2, theta1, f):
+# Inputs:
+#   data : pandas dataframe containing ocean bottom properties
+#         c : sound speed [m/s]
+#         rho : density [g/cm3]
+#   mat1 : material name [string]
+#   mat2 : material name [string]
+#   mat3 : material name [string]
+#   h2 : thickness of middle layer [m]
+#   theta1 : grazing angle [deg] (array)
+#   f : frequency [Hz]
+# Returns:
+#   R : Rayleigh's relfection coefficient [1] (array)
+    c1 = data.loc[mat1,'cc']
+    rho1 = data.loc[mat1,'rho']
+    c2 = data.loc[mat2,'cc']
+    rho2 = data.loc[mat2,'rho']
+    c3 = data.loc[mat3,'cc']
+    rho3 = data.loc[mat3,'rho']
+
+    RR = []
+    for theta in theta1:
+        theta2=( Theta2(c1,c2,theta) )
+        theta3=( Theta2(c1,c3,theta) )
+        z1=( Z(rho1,c1,theta ) )
+        z2=( Z(rho2,c2,theta2) )
+        z3=( Z(rho2,c3,theta3) )
+        phi2=( phi(f,c2,h2,theta2) )
+        RR.append( complex( z2*(z3-z1),\
+                             (z1*z3 - z2**2)*tan(phi2) )/\
+                     complex( z2*(z3+z1),\
+                             (z1*z3 - z2**2)*tan(phi2) ) )
+    return array(RR)
+
+#-------------------------------------------------------------------------------
+def layerFrequencies(m,c,h, wl='quarter'):
+    frequency = c*(2.*m-1)/(4.*h)
+    if (wl == 'half'):
+        return frequency*2.
+    return frequency
