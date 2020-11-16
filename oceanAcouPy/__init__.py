@@ -5,6 +5,7 @@ from oceanAcouPy import moi
 from oceanAcouPy import reflCoeff
 from oceanAcouPy import soundSpeed
 from oceanAcouPy import normalModes
+from oceanAcouPy import detectThreshold
 
 __all__ = [
         'attenuation',
@@ -12,6 +13,7 @@ __all__ = [
         'bottomloss',
         'moi',
         'reflCoeff',
-        'soundSpeed'
-        'normalModes'
+        'soundSpeed',
+        'normalModes',
+        'detectThreshold'
         ]
