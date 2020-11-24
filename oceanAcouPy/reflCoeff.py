@@ -95,7 +95,10 @@ def RefC (df, mat1, mat2, thetaList):
 
 #-------------------------------------------------------------------------------
 def RefC_FB(theta1,c1,rho1,c2,rho2):
+    # theta: deg --> rad
+    theta1 = theta1 * pi/180
     theta2 = arccos(c2/c1*cos(theta1))
+
     R = (rho2*c2/sin(theta2) - rho1*c1/sin(theta1))/\
         (rho2*c2/sin(theta2) + rho1*c1/sin(theta1))
     if (theta1 == 0):
@@ -104,6 +107,8 @@ def RefC_FB(theta1,c1,rho1,c2,rho2):
 
 #-------------------------------------------------------------------------------
 def RefC_FB_shear(theta1,c1,rho1,c2,rho2,cs):
+    # theta: deg --> rad
+    theta1 = theta1 * pi/180
     theta2 = arccos(c2/c1*cos(theta1))
     thetas = arccos(cs/c1*cos(theta1))
 
