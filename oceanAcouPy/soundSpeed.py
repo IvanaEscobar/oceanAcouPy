@@ -35,6 +35,15 @@ def cMunk (z):
     return c0*( 1 + eps*(zt - 1 + exp(-zt)) )
 
 #-------------------------------------------------------------------------------
+def cIsoVel (z):
+# Inputs:
+#   z : depth [m]
+# Returns:
+#   Isovelocity downward refracting sound speed profile [m/s]
+    c0 = 1520.
+    return c0 - 0.5*z
+
+#-------------------------------------------------------------------------------
 def cDD (z): 
 # Inputs:
 #   z : depth [m]
