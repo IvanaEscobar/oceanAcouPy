@@ -47,4 +47,4 @@ def beamPatternWindow ( thetaS, theta, f, c, r, noise, window ):
 
 #-------------------------------------------------------------------------------
 def arrayGain (BFIntegral):
-    return 10*log10(2*pi / BFIntegral)
+    return 10*log10(abs(2*pi / BFIntegral))
