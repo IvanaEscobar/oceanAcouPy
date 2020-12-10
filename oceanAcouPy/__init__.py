@@ -7,6 +7,7 @@ from oceanAcouPy import soundSpeed
 from oceanAcouPy import normalModes
 from oceanAcouPy import detectThreshold
 from oceanAcouPy import seafloor
+from oceanAcouPy import bubble
 
 __all__ = [
         'attenuation',
@@ -17,5 +18,6 @@ __all__ = [
         'soundSpeed',
         'normalModes',
         'detectThreshold',
-        'seafloor'
+        'seafloor',
+        'bubble'
         ]

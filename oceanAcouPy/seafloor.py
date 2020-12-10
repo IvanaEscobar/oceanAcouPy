@@ -75,7 +75,3 @@ def TS ( k,a ):
         return 10*log10(abs(sigmaGS(a)))
     else:
         return 10*log10(abs(sigmaRayBS( k,a )))
-#-------------------------------------------------------------------------------
-
-def tsBubble (sigma):
-    return 10*log10(abs(sigma))
