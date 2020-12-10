@@ -1,8 +1,9 @@
 # oceanAcouPy
 EE 348N: Ocean Acoustics functions
 
-Homeworks 1-5
+Homeworks 1-8
 Midterm
+Final
 
 ## Install
 - Fork and clone repo
