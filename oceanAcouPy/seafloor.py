@@ -5,6 +5,7 @@
 from numpy import exp, arange, linspace, array, floor,\
                 cos, sin, tan, arccos, arctan, sqrt, pi, \
                 where, amax, exp, log10, append
+from .reflCoeff import RefC, Theta2
 
 ### FUNCTIONS ###
 def braggK(kw, theta):
@@ -23,7 +24,7 @@ def ptSigma(df, W,kw,thetal, seaFloor=True):
     rho1 = df.loc['water','rho']
     c2 = df.loc['sediment','c']
     rho2 = df.loc['sediment','rho']
-    theta2l = oa.reflCoeff.Theta2(c1,c2,thetal)
+    theta2l = Theta2(c1,c2,thetal)
     # convert theta to radians
     thetal = thetal*pi/180; theta2l = theta2l*pi/180
 
@@ -41,27 +42,27 @@ def kaSigma (df, slopeVar, thetal, seaFloor=True):
     # convert theta to radians
     thetal = thetal*pi/180
     if (seaFloor):
-        r90 = oa.reflCoeff.RefC (df, 'water', 'sediment', [90])
+        r90 = RefC(df, 'water', 'sediment', [90])
     else:
         r90 = -1
     return abs(r90)**2 * exp( -1/(2*slopeVar*tan(thetal)**2) ) / \
-            (8*pi**slopeVar*sin(thetal)**4)
+            (8*pi*slopeVar*sin(thetal)**4)
 #-------------------------------------------------------------------------------
 
 def lambertsSigma(thetal):
     # convert theta to radians
     thetal = thetal*pi/180
-    return 10**(-2.7)*sin(thetal)**2
+    return 10**(-2.5)*sin(thetal)**2
 #-------------------------------------------------------------------------------
 
 def roughnessPiersonMosko (w, k):
     g = 9.81 # [m/s]
     Omega = sqrt(k*g)
-    return 8.1e-3*g**2 * exp(-0.74*g/w/Omega)/Omega**5
+    return 8.1e-3*g**2 * exp(-0.74*(g/w/Omega)**4)/Omega**5
 #-------------------------------------------------------------------------------
 
 def sigmaGS ( a ):
-    return a**4/4
+    return a**2/4
 #-------------------------------------------------------------------------------
 
 def sigmaRayBS ( k, a ):
@@ -75,3 +76,6 @@ def TS ( k,a ):
     else:
         return 10*log10(abs(sigmaRayBS( k,a )))
 #-------------------------------------------------------------------------------
+
+def tsBubble (sigma):
+    return 10*log10(abs(sigma))
