@@ -2,7 +2,7 @@
  
  setup(
    name='oceanAcouPy',
-   version='0.0',
+   version='0.1',
    packages=['oceanAcouPy', 'oceanAcouPy.test'],
    url='https://github.com/IvanaEscobar/oceanAcouPy',
    keywords=['acoustics','underwater','ocean'],
